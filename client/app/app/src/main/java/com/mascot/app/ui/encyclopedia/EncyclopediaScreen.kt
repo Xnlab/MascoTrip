@@ -18,12 +18,14 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mascot.app.data.encyclopediadata.entity.MascotEntity
 import com.mascot.app.data.encyclopediadata.entity.ZoneEntity
+import com.mascot.app.ui.theme.*
 
 /**
  * 도감 화면
@@ -58,18 +60,17 @@ fun EncyclopediaScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0F1620))
+            .background(MascotBackground)  // 포켓캠프 스타일 배경
             .padding(16.dp)
     ) {
 
         item {
             Text(
                 "지역 마스코트 도감",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineLarge,
+                color = MascotOnBackground
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
         zones.groupBy { it.region }.forEach { (regionName, regionZones) ->
@@ -104,15 +105,22 @@ fun EncyclopediaScreen(
     }
 }
 
+/**
+ * 포켓캠프 스타일 지역 헤더
+ */
 @Composable
 fun RegionHeader(title: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xFF222933))
-            .padding(12.dp)
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium,
+        color = MascotPrimary.copy(alpha = 0.2f)
     ) {
-        Text(text = title, color = Color.White, fontWeight = FontWeight.SemiBold)
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = MascotOnBackground,
+            modifier = Modifier.padding(14.dp)
+        )
     }
 }
 
@@ -153,29 +161,46 @@ fun MascotCard(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Box(
-            modifier = Modifier
-                .size(100.dp)
-                .background(Color.White),
-            contentAlignment = Alignment.Center
+        // 포켓캠프 스타일 카드 배경
+        Surface(
+            modifier = Modifier.size(100.dp),
+            shape = MaterialTheme.shapes.medium,
+            color = CardBackground,
+            shadowElevation = 4.dp
         ) {
-            if (finalImageId != 0) {
-                Image(
-                    painter = painterResource(id = finalImageId),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(0.75f),
-                    contentScale = ContentScale.Fit
-                )
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                if (finalImageId != 0) {
+                    Image(
+                        painter = painterResource(id = finalImageId),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(0.75f),
+                        contentScale = ContentScale.Fit
+                    )
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        Text(mascot.name, color = Color.White, fontWeight = FontWeight.Bold)
-        Text(mascot.region, color = Color.Gray)
+        Text(
+            mascot.name,
+            style = MaterialTheme.typography.titleSmall,
+            color = MascotOnBackground
+        )
+        Text(
+            mascot.region,
+            style = MaterialTheme.typography.bodySmall,
+            color = MascotOnSurface.copy(alpha = 0.6f)
+        )
     }
 }
 
+/**
+ * 포켓캠프 스타일 마스코트 상세 다이얼로그
+ */
 @Composable
 fun MascotDetailDialog(
     mascot: MascotEntity,
@@ -183,18 +208,50 @@ fun MascotDetailDialog(
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            shape = MaterialTheme.shapes.medium,
-            color = Color.White,
-            modifier = Modifier.padding(20.dp)
+            shape = MaterialTheme.shapes.large,
+            color = CardBackground,
+            modifier = Modifier.padding(20.dp),
+            shadowElevation = 8.dp
         ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                Text(mascot.name, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.height(12.dp))
-                Text("지역: ${mascot.region}")
-                Spacer(Modifier.height(12.dp))
-                Text(mascot.description)
+            Column(
+                modifier = Modifier.padding(24.dp)
+            ) {
+                Text(
+                    text = mascot.name,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MascotOnBackground
+                )
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = "지역: ${mascot.region}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MascotOnSurface.copy(alpha = 0.7f)
+                )
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = mascot.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MascotOnSurface
+                )
                 Spacer(Modifier.height(24.dp))
-                Button(onClick = onDismiss) { Text("닫기") }
+                
+                // 포켓캠프 스타일 버튼
+                Surface(
+                    onClick = onDismiss,
+                    shape = MaterialTheme.shapes.medium,
+                    color = MascotPrimary,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "닫기",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MascotOnPrimary,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    )
+                }
             }
         }
     }

@@ -21,6 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.mascot.app.ui.Screen
+import com.mascot.app.ui.theme.*
 
 /**
  * 홈 화면
@@ -130,39 +131,38 @@ fun QuestProgressUI(
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = "퀘스트 진행도",
-            fontSize = 30.sp,
-            color = Color.DarkGray,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineMedium,
+            color = MascotOnBackground
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
+        // 포켓캠프 스타일 진행도 카드
         Surface(
-            color = if (isComplete) Color(0xFFFFE082) else Color.White.copy(alpha = 0.8f),
-            shape = RoundedCornerShape(20.dp),
-            shadowElevation = if (isComplete) 4.dp else 0.dp,
-            onClick = {
-                onHeaderClick()
-            }
+            color = if (isComplete) MascotAccentLight else CardBackground,
+            shape = MaterialTheme.shapes.large,
+            shadowElevation = if (isComplete) 6.dp else 3.dp,
+            onClick = { onHeaderClick() },
+            modifier = Modifier.fillMaxWidth()
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 LinearProgressIndicator(
                     progress = if (total > 0) current / total.toFloat() else 0f,
                     modifier = Modifier
-                        .width(100.dp)
-                        .height(8.dp),
-                    color = Color(0xFFFFD260),
-                    trackColor = Color(0xFFEEEEEE),
+                        .weight(1f)
+                        .height(10.dp),
+                    color = if (isComplete) MascotAccent else MascotPrimary,
+                    trackColor = MascotSurfaceVariant,
+                    shape = MaterialTheme.shapes.small
                 )
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = "$current / $total",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.DarkGray
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MascotOnSurface
                 )
             }
         }

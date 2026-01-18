@@ -7,11 +7,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.foundation.background
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.mascot.app.ui.theme.*
 
 /**
  * 완료된 퀘스트 목록 화면
@@ -41,49 +43,63 @@ fun CompletedQuestScreen(
             )
         }
     ) { paddingValues ->
-
-        if (completedQuests.isEmpty()) {
-            // 🔹 완료한 퀘스트가 없을 때
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "아직 완료한 퀘스트가 없어요.",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        } else {
-            // 🔹 완료된 퀘스트 목록
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(completedQuests) { quest ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
-                        )
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(MascotBackground)  // 포켓캠프 스타일 배경
+        ) {
+            if (completedQuests.isEmpty()) {
+                // 완료한 퀘스트가 없을 때
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "아직 완료한 퀘스트가 없어요.",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MascotOnSurface.copy(alpha = 0.6f)
+                    )
+                }
+            } else {
+                // 완료된 퀘스트 목록 (포켓캠프 스타일)
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(completedQuests) { quest ->
+                        // 포켓캠프 스타일 완료 카드
+                        Surface(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = MaterialTheme.shapes.medium,
+                            color = MascotSuccess.copy(alpha = 0.15f),
+                            shadowElevation = 3.dp
                         ) {
-                            Text(
-                                text = quest.title,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = quest.location,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
+                            Column(
+                                modifier = Modifier.padding(18.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "✅ ",
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                    Text(
+                                        text = quest.title,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MascotOnBackground
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "📍 ${quest.location}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MascotOnSurface.copy(alpha = 0.7f)
+                                )
+                            }
                         }
                     }
                 }

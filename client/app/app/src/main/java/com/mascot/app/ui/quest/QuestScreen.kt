@@ -1,5 +1,6 @@
 package com.mascot.app.ui.quest
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -20,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mascot.app.data.model.QuestItem
 import com.mascot.app.ui.common.QuestItemCard
+import com.mascot.app.ui.theme.*
 
 /**
  * 퀘스트 목록 화면
@@ -80,13 +83,31 @@ fun QuestScreen(
 
     Scaffold(
         floatingActionButton = {
-            ExtendedFloatingActionButton(
+            // 포켓캠프 스타일 FAB
+            Surface(
                 onClick = { navController.navigate("tutorial_start") },
-                containerColor = MaterialTheme.colorScheme.primary
+                shape = MaterialTheme.shapes.large,
+                color = MascotPrimary,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .shadow(elevation = 8.dp, shape = MaterialTheme.shapes.large)
             ) {
-                Icon(Icons.Default.PlayArrow, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("튜토리얼 시작하기")
+                Row(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Default.PlayArrow,
+                        contentDescription = null,
+                        tint = MascotOnPrimary
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        "튜토리얼 시작하기",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MascotOnPrimary
+                    )
+                }
             }
         }
     ) { innerPadding ->
@@ -95,46 +116,75 @@ fun QuestScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
+                .background(MascotBackground)  // 포켓캠프 스타일 배경
                 .padding(16.dp)
         ) {
 
-            /* ---------- 🔥 상단 타이틀 + 완료된 퀘스트 버튼 ---------- */
+            /* ---------- 상단 타이틀 + 완료된 퀘스트 버튼 ---------- */
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 12.dp),
+                    .padding(bottom = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "퀘스트 목록",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MascotOnBackground,
                     modifier = Modifier.weight(1f)
                 )
 
-                TextButton(
-                    onClick = {
-                        navController.navigate("completed_quests")
-                    }
+                // 포켓캠프 스타일 버튼
+                Surface(
+                    onClick = { navController.navigate("completed_quests") },
+                    shape = MaterialTheme.shapes.medium,
+                    color = MascotSecondary,
+                    modifier = Modifier.padding(start = 8.dp)
                 ) {
-                    Text("완료된 퀘스트")
+                    Text(
+                        text = "완료된 퀘스트",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MascotOnPrimary,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
                 }
             }
 
-            /* ---------- 지역 선택 ---------- */
+            /* ---------- 지역 선택 (포켓캠프 스타일 칩) ---------- */
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(bottom = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 regionTabs.forEach { region ->
-                    FilterChip(
-                        selected = selectedRegion == region,
+                    // 포켓캠프 스타일의 둥근 칩
+                    Surface(
                         onClick = { selectedRegion = region },
-                        label = { Text(region) }
-                    )
+                        shape = MaterialTheme.shapes.large,
+                        color = if (selectedRegion == region) {
+                            MascotPrimary
+                        } else {
+                            CardBackground
+                        },
+                        modifier = Modifier
+                            .shadow(
+                                elevation = if (selectedRegion == region) 4.dp else 2.dp,
+                                shape = MaterialTheme.shapes.large
+                            )
+                    ) {
+                        Text(
+                            text = region,
+                            style = MaterialTheme.typography.labelLarge,
+                            color = if (selectedRegion == region) {
+                                MascotOnPrimary
+                            } else {
+                                MascotOnSurface
+                            },
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                        )
+                    }
                 }
             }
 
@@ -160,11 +210,16 @@ fun QuestScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("아직 받은 의뢰가 없어요.", color = Color.Gray)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                "아직 받은 의뢰가 없어요.",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MascotOnSurface.copy(alpha = 0.6f)
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
                             Text(
                                 "튜토리얼을 시작하면\n맞춤형 퀘스트가 도착합니다!",
-                                color = Color.LightGray,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MascotOnSurface.copy(alpha = 0.5f),
                                 textAlign = TextAlign.Center
                             )
                         }

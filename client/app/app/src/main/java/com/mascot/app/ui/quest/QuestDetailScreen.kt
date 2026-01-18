@@ -3,6 +3,7 @@ package com.mascot.app.ui.quest
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -18,6 +19,7 @@ import androidx.navigation.NavController
 import com.mascot.app.data.model.QuestItem
 import com.mascot.app.util.LocationHelper
 import com.mascot.app.util.getDistanceMeter
+import com.mascot.app.ui.theme.*
 import kotlinx.coroutines.delay
 import androidx.compose.material.icons.Icons
 
@@ -105,37 +107,73 @@ fun QuestDetailScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
+                .background(MascotBackground)  // 포켓캠프 스타일 배경
         ) {
             if (quest == null) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("퀘스트 정보를 찾을 수 없습니다.")
+                    Text(
+                        "퀘스트 정보를 찾을 수 없습니다.",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MascotOnSurface.copy(alpha = 0.6f)
+                    )
                 }
             } else {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp)
+                        .padding(20.dp)
                 ) {
-                    Text(
-                        text = quest.title,
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = quest.location)
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = quest.description)
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    Button(
+                    // 포켓캠프 스타일 카드
+                    Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        enabled = !checkingLocation && !completed,
+                        shape = MaterialTheme.shapes.large,
+                        color = CardBackground,
+                        shadowElevation = 4.dp
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(20.dp)
+                        ) {
+                            Text(
+                                text = quest.title,
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = MascotOnBackground
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+                            
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "📍 ",
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                Text(
+                                    text = quest.location,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MascotOnSurface.copy(alpha = 0.7f)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                            
+                            Text(
+                                text = quest.description,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MascotOnSurface
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // 포켓캠프 스타일 버튼
+                    Surface(
                         onClick = {
+                            if (checkingLocation || completed) return@Surface
                             val hasPermission =
                                 ContextCompat.checkSelfPermission(
                                     context,
@@ -159,30 +197,73 @@ fun QuestDetailScreen(
                                 currentLat = lat
                                 currentLng = lng
                             }
-                        }
-                    ) {
-                        if (checkingLocation) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp),
-                                strokeWidth = 2.dp
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("확인 중…")
+                        },
+                        shape = MaterialTheme.shapes.medium,
+                        color = if (!checkingLocation && !completed) {
+                            MascotPrimary
                         } else {
-                            Text("도착 확인")
+                            MascotSurfaceVariant
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !checkingLocation && !completed
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 14.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (checkingLocation) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    strokeWidth = 2.dp,
+                                    color = MascotOnPrimary
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text(
+                                    "확인 중…",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = MascotOnPrimary
+                                )
+                            } else {
+                                Text(
+                                    "도착 확인",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = if (completed) {
+                                        MascotOnSurface.copy(alpha = 0.5f)
+                                    } else {
+                                        MascotOnPrimary
+                                    }
+                                )
+                            }
                         }
                     }
 
                     resultMessage?.let {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = it,
-                            color = if (completed)
-                                MaterialTheme.colorScheme.primary
-                            else
-                                MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                        
+                        // 포켓캠프 스타일 메시지 카드
+                        Surface(
+                            shape = MaterialTheme.shapes.medium,
+                            color = if (completed) {
+                                MascotSuccess.copy(alpha = 0.2f)
+                            } else {
+                                MascotError.copy(alpha = 0.1f)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = it,
+                                color = if (completed) {
+                                    MascotSuccess
+                                } else {
+                                    MascotError
+                                },
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
                     }
                 }
             }

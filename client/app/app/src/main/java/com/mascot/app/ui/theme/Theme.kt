@@ -1,58 +1,68 @@
 package com.mascot.app.ui.theme
 
-import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+/**
+ * 포켓캠프 스타일 라이트 컬러 스킴
+ * 
+ * 동물의숲 포켓캠프에서 영감을 받은 밝고 따뜻한 색감
+ * 항상 라이트 모드 사용 (포켓캠프는 밝은 테마)
+ */
+private val MascotColorScheme = lightColorScheme(
+    primary = MascotPrimary,
+    onPrimary = MascotOnPrimary,
+    primaryContainer = MascotPrimaryVariant,
+    onPrimaryContainer = MascotOnPrimary,
+    
+    secondary = MascotSecondary,
+    onSecondary = MascotOnPrimary,
+    secondaryContainer = MascotSecondaryVariant,
+    onSecondaryContainer = MascotOnPrimary,
+    
+    tertiary = MascotAccent,
+    onTertiary = MascotOnPrimary,
+    tertiaryContainer = MascotAccentLight,
+    onTertiaryContainer = MascotOnPrimary,
+    
+    background = MascotBackground,
+    onBackground = MascotOnBackground,
+    
+    surface = MascotSurface,
+    onSurface = MascotOnSurface,
+    surfaceVariant = MascotSurfaceVariant,
+    onSurfaceVariant = MascotOnSurface,
+    
+    error = MascotError,
+    onError = Color.White,
+    errorContainer = Color(0xFFFFE5E5),
+    onErrorContainer = MascotError,
+    
+    outline = Color(0xFFE0E0E0),
+    outlineVariant = Color(0xFFF0F0F0),
+    
+    scrim = Color(0x66000000),
+    inverseSurface = MascotOnBackground,
+    inverseOnSurface = MascotBackground,
+    inversePrimary = MascotPrimaryVariant,
+    surfaceTint = MascotPrimary
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
-)
-
+/**
+ * Mascot 앱 테마
+ * 
+ * 포켓캠프 스타일의 밝고 따뜻한 UI 테마
+ * 항상 라이트 모드 사용
+ */
 @Composable
 fun MascotTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = MascotColorScheme,
         typography = Typography,
+        shapes = Shapes,
         content = content
     )
 }
