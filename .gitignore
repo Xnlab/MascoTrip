@@ -1,0 +1,28 @@
+# IDE
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+
+# Build
+build/
+.gradle/
+local.properties
+*.apk
+*.aab
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
